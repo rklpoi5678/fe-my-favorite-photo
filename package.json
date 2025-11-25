@@ -1,0 +1,58 @@
+{
+  "name": "my-favorite-photo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "my-favorite-photo frontend-express-project",
+  "keywords": [
+    "myFavoritePhoto"
+  ],
+  "homepage": "https://github.com/My-favorite-photo/fe-my-favorite-photo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/My-favorite-photo/fe-my-favorite-photo.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/My-favorite-photo/fe-my-favorite-photo/issues"
+  },
+  "engines": {
+    "node": ">=22.x",
+    "npm": ">=11.x"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.(js,jsx,ts,tsx)": [
+      "prettier --write",
+      "eslint --fix --max-warning=0"
+    ]
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "next": "16.0.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-hook-form": "^7.66.1",
+    "tailwind-merge": "^3.4.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4"
+  }
+}
