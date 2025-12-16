@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": true, //js파일허용
+    "skipLibCheck": true, // 라이브러리 타입 검사를 건너뜀(ts용)
+    "esModuleInterop": true, // cjs/ejs 호환성을 개선
+    "module": "esnext", // 모듈 시스템을 ESM으로 지정
+    "target": "esnext", // 목표 JS 버전을 최신으로 지정한다.
+    "moduleResolution": "node", // 모듈 해석 방식을 Node.js 스타일로 지정한다.
+    "resolveJsonModule": true, // JSON 모듈 임포트를 허용
+    "isolatedModules": true, // 각 파일을 독립적인 모듈로 간주함
+    "jsx": "preserve", // next 가 jsx를 처리하도록 맡긴다.
+    "incremental": true, // 증분 컴파일 활성화 (성능 보완)
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [ // 상대경로 지정
+        "./src/*"
+      ],
+      "#/*": [ // 최상위 루트 상대경로 지정
+        "./*"
+      ]
+    },
+  },
+}
