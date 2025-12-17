@@ -16,7 +16,6 @@ export default function CardBuyer({ card }) {
   const [quantity, setQuantity] = useState(1);
   const { openModal, closeModal } = useModal()
   const cardData = card.userCard.photoCard;
-  console.log('card', card)
 
   const handleOnModal = () => {
     openModal(MODAL_TYPES.MODAL, {

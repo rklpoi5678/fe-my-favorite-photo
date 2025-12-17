@@ -7,8 +7,8 @@ import Link from 'next/link';
 import ic_bell from '@/assets/icons/Ic_bell.svg';
 import ic_redBell from '@/assets/icons/Ic_redBell.svg';
 import LogoPng from '@/assets/images/logo.png';
-import { useAuth } from '@/providers/AuthProvider';
 import { hoursAgo } from '@/libs/utils/time';
+import { useAuth } from '@/providers/AuthProvider';
 import { useNotification } from '@/providers/NotificationProvider';
 
 export default function Header() {
@@ -53,9 +53,8 @@ export default function Header() {
                         <div
                           key={n.id}
                           onClick={() => markAsRead(n.id)}
-                          className={`p-4 w-full transition ${
-                            n.isRead ? 'bg-gray-500' : 'bg-[#222222]'
-                          }`}
+                          className={`p-4 w-full transition ${n.isRead ? 'bg-gray-500' : 'bg-[#222222]'
+                            }`}
                         >
                           {n.isRead ? (
                             <>
