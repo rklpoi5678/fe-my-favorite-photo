@@ -8,19 +8,37 @@ import { useState } from 'react';
 
 import ic_back from '@/assets/icons/Ic_back.svg';
 import ic_bell from '@/assets/icons/Ic_bell.svg';
+import ic_redBell from '@/assets/icons/Ic_redBell.svg';
 import ic_hamburger from '@/assets/icons/Ic_hamberger.svg';
 import img_logo from '@/assets/images/svg/logo.svg';
 import { useAuth } from '@/providers/AuthProvider';
+import { hoursAgo } from '@/libs/utils/time';
+import { useNotification } from '@/providers/NotificationProvider';
+
+/** hasId: 처음에 상세 페이지에만 해당 헤더가 쓰이는 줄 알고 /page/id가 있다면 title을 받는 헤더를 표시하려고 함 */
 
 export default function MobileHeader({ hasId = false, title = '마이갤러리' }) {
-  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const { user, logout } = useAuth();
+  const { notifications, loading, markAsRead } = useNotification();
+
+  const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const hasUnread = notifications.some((n) => !n.isRead);
 
   let content = null;
 
   if (!user) content = <LogoutHeader openMenu={() => setIsHamburgerOpen(true)} />;
   else if (hasId) content = <SecondaryHeader title={title} />;
-  else content = <LoginHeader openMenu={() => setIsHamburgerOpen(true)} />;
+  else
+    content = (
+      <LoginHeader
+        user={user}
+        hasUnread={hasUnread}
+        openMenu={() => setIsHamburgerOpen(true)}
+        openNotification={() => setIsNotificationOpen(true)}
+      />
+    );
 
   return (
     <div className="sm:flex md:hidden h-[60px] flex-col justify-center">
@@ -29,62 +47,44 @@ export default function MobileHeader({ hasId = false, title = '마이갤러리' 
       {isHamburgerOpen && (
         <OpenHamburger user={user} logout={logout} onClose={() => setIsHamburgerOpen(false)} />
       )}
+
+      {isNotificationOpen && user && (
+        <MobileNotificationModal
+          userId={user.id}
+          hasUnread={hasUnread}
+          notifications={notifications}
+          loading={loading}
+          markAsRead={markAsRead}
+          onClose={() => setIsNotificationOpen(false)}
+        />
+      )}
     </div>
   );
 }
 
-function LoginHeader({ openMenu }) {
-  const notifications = [
-    {
-      id: 1,
-      message: '기며누님이 [RAR | 집 앞마당]을 구매했습니다.',
-      time: '1시간 전',
-    },
-    {
-      id: 2,
-      message: '예진쓰님이 [COMMON | 스페인 여행]의 포토카드 교환을 제안했습니다.',
-      time: '1시간 전',
-    },
-  ];
-
+// 로그인 헤더
+function LoginHeader({ openMenu, openNotification, hasUnread }) {
   return (
-    <div className="w-full flex justify-around items-center ">
+    <div className="w-full flex justify-around items-center">
       <button onClick={openMenu} className="cursor-pointer">
         <Image src={ic_hamburger} alt="메뉴" width={22} height={22} />
       </button>
 
       <Image src={img_logo} alt="로고" width={83} height={15} />
 
-      <Popover className="relative">
-        <Popover.Button>
-          <Image src={ic_bell} width={22} height={22} alt="알림" />
-        </Popover.Button>
-        <Popover.Panel className="absolute right-0 mt-2 bg-gray-500 w-[300px] py-3 divide-y divide-gray-400 z-[50]">
-          {notifications.length === 0 ? (
-            <p className="text-gray-400 py-4 text-center">알림이 없습니다.</p>
-          ) : (
-            notifications.map((n) => (
-              <div key={n.id} className="p-4 w-full transition">
-                <p className=" text-white font-noto text-[14px] font-normal leading-normal text-left ">
-                  {n.message}
-                </p>
-                <p className="text-[#A4A4A4] font-noto text-[12px] font-light leading-normal mt-2.5 text-left">
-                  {n.time}
-                </p>
-              </div>
-            ))
-          )}
-        </Popover.Panel>
-      </Popover>
+      <button onClick={openNotification} className="cursor-pointer">
+        <Image src={hasUnread ? ic_redBell : ic_bell} alt="알림 상태" width={22} height={22} />
+      </button>
     </div>
   );
 }
 
+// 상세 페이지 헤더
 function SecondaryHeader({ title }) {
-  const router = useRouter()
+  const router = useRouter();
   return (
     <div className="w-full flex justify-around items-center ">
-      <button onClick={() => router.back} className='cursor-pointer'>
+      <button onClick={() => router.back()} className="cursor-pointer">
         <Image src={ic_back} alt="뒤로가기" width={22} height={22} />
       </button>
 
@@ -97,6 +97,7 @@ function SecondaryHeader({ title }) {
   );
 }
 
+// 비로그인 헤더
 function LogoutHeader({ openMenu }) {
   return (
     <div className="w-full flex justify-around items-center ">
@@ -106,15 +107,19 @@ function LogoutHeader({ openMenu }) {
 
       <Image src={img_logo} alt="로고" width={83} height={15} />
 
-      <Link href="/login" className="text-[#DDD] text-right text-[14px] font-medium leading-normal">
+      <Link
+        href="/login"
+        className="text-[#DDD] text-right text-[14px] font-medium leading-normal cursor-pointer"
+      >
         로그인
       </Link>
     </div>
   );
 }
 
+// 햄버거 버튼 오픈
+
 function OpenHamburger({ onClose, user, logout }) {
-  console.log(user)
   return (
     <>
       <div className="fixed inset-0 bg-black/80 z-40" onClick={onClose} />
@@ -126,7 +131,9 @@ function OpenHamburger({ onClose, user, logout }) {
                 <h1 className="text-[18px] font-bold mb-[20px]">안녕하세요, {user.nickname}님!</h1>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-300 text-[12px] font-light">보유 포인트</span>
-                  <span className="text-main text-right text-[12px] font-normal">{user.balance} P</span>
+                  <span className="text-main text-right text-[12px] font-normal">
+                    {user.balance} P
+                  </span>
                 </div>
               </>
             ) : (
@@ -148,13 +155,60 @@ function OpenHamburger({ onClose, user, logout }) {
           </div>
 
           {user ? (
-            <button onClick={logout} className="text-gray-400 text-[14px] text-left">
+            <button onClick={logout} className="text-gray-400 text-[14px] text-left cursor-pointer">
               로그아웃
             </button>
           ) : (
-            <Link href="/login" className="text-gray-400 text-[14px] text-left">
+            <Link href="/login" className="text-gray-400 text-[14px] text-left cursor-pointer">
               로그인
             </Link>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// 모바일 전용 알림
+function MobileNotificationModal({
+  userId,
+  notifications,
+  loading,
+  markAsRead,
+  onClose,
+  hasUnread,
+}) {
+  return (
+    <>
+      <div className="fixed inset-0 bg-gray-500 z-50 flex flex-col">
+        <div className="w-full h-[60px] flex justify-between px-[20px] items-center border-b border-gray-400">
+          <button onClick={onClose} className="cursor-pointer">
+            <Image src={ic_back} alt="뒤로가기" width={22} height={22} />
+          </button>
+
+          <h1 className="text-white text-[20px] font-br tracking-[-0.6px]">알림</h1>
+
+          <Image src={ic_bell} alt="공백" width={22} height={22} className="invisible" />
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {loading ? (
+            <p className="text-center text-gray-400 mt-10">로딩 중...</p>
+          ) : notifications.length === 0 ? (
+            <p className="text-center text-gray-400 mt-10">알림이 없습니다.</p>
+          ) : (
+            notifications.map((n) => (
+              <div
+                key={n.id}
+                onClick={() => markAsRead(n.id)}
+                className={`p-4 w-full transition ${
+                  n.isRead ? 'bg-gray-500 text-gray-300' : 'bg-[#222222] text-white'
+                } cursor-pointer`}
+              >
+                <p className="text-[14px] font-normal">{n.content}</p>
+                <p className="text-[12px] font-light mt-2.5">{hoursAgo(n.createdAt)}</p>
+              </div>
+            ))
           )}
         </div>
       </div>

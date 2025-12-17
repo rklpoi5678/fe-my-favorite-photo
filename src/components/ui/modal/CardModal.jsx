@@ -45,32 +45,31 @@ SelectField.displayName = 'SelectField';
  * @param {String} type sell이면 나의 포토카드 판매하기 아니면 수정하기용 모달
  * @returns
  */
-export function CardModal({ type, onClose, card }) {
+export function CardModal({ type, onClose, card, cardData }) {
+  const isEdit = type === 'edit';
   const router = useRouter();
   const {
     control,
     handleSubmit,
     register,
     setValue,
-    watch,
     getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      quantity: 1,
-      price: 0,
-      grade: '',
-      genre: '',
-      description: card.description || '',
+      quantity: isEdit ? card.remainingQuantity : 1,
+      price: isEdit ? card.price : 0,
+      grade: isEdit ? card.wishGrade : '',
+      genre: isEdit ? card.wishCategory : '',
+      description: isEdit ? card.wishDescription : '',
     },
   });
 
   const baseHost = process.env.NEXT_PUBLIC_IMAGE_HOST || 'http://127.0.0.1:3005';
-  const subject = type === 'sell' ? '나의 포토카드 판매하기' : '수정하기';
-  const fullImageUrl = card?.imageUrl
-    ? card.imageUrl.startsWith('http')
-      ? card.imageUrl
-      : `${baseHost}/${card.imageUrl}`
+  const fullImageUrl = cardData?.imageUrl
+    ? cardData.imageUrl.startsWith('http')
+      ? cardData.imageUrl
+      : `${baseHost}/${cardData.imageUrl}`
     : img_card; // 기본 이미지는 폴백
 
   const onCloseBackdrop = (e) => {
@@ -90,11 +89,18 @@ export function CardModal({ type, onClose, card }) {
         genre: data.genre,
       };
 
-      await saleService.createSale(saleData);
+      if (isEdit) {
+        await saleService.updateSale(card.id, saleData);
+        alert("수정이 완료되었습니다.")
+        onClose();
+        router.push(`/selling`)
+      } else {
+        await saleService.createSale(saleData);
+        router.push(
+          `/selling/complete/success?name=${encodeURIComponent(card.name)}&quantity=${data.quantity}&grade=${data.genre}`,
+        );
+      }
 
-      router.push(
-        `/selling/complete/success?name=${encodeURIComponent(card.name)}&quantity=${data.quantity}&grade=${data.genre}`,
-      );
 
       onClose();
     } catch (error) {
@@ -140,7 +146,7 @@ export function CardModal({ type, onClose, card }) {
               md:text-2xl
               "
               >
-                {subject}
+                {isEdit ? '수정하기' : '나의 포토카드 판매하기'}
               </h1>
               <button
                 className="hidden md:block text-gray-400 hover:text-white text-3xl transition"
@@ -157,7 +163,7 @@ export function CardModal({ type, onClose, card }) {
           <div className="w-full overflow-y-auto px-6">
             <CardTitle
               size="L"
-              titleMessage={card.name}
+              titleMessage={cardData.name}
               className="text-2xl sm:text-[2rem] md:text-[2.5rem] font-bold mb-5"
             />
 
@@ -170,11 +176,12 @@ export function CardModal({ type, onClose, card }) {
                   <div className="sm:flex-1 sm:w-full">
                     <CardCounterInput
                       card={card}
+                      cardData={cardData}
                       register={register}
                       errors={errors}
                       setValue={setValue}
                       getValues={getValues}
-                      watch={watch}
+                      type={type}
                     />
                   </div>
                 </div>
@@ -256,7 +263,7 @@ export function CardModal({ type, onClose, card }) {
                     취소하기
                   </Button>
                   <Button thickness="thin" size="L" type="submit">
-                    판매하기
+                    {isEdit ? "수정하기" : "판매하기"}
                   </Button>
                 </footer>
               </section>

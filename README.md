@@ -38,7 +38,7 @@
 | **Team Leader** | **김윤기** | [@youn_gi_kim](https://github.com/rklpoi5678) |
 | **FE/BE Developer** | **박창기** | [@changki](https://github.com/p-changki) |
 | **FE/BE Developer** | **이유리** | [@yoorrll](https://github.com/yoorrll) |
-| **FE Developer** | **오마린** | [@oh1marin](https://github.com/oh1marin) |
+| **FE/QA Developer** | **오마린** | [@oh1marin](https://github.com/oh1marin) |
 
 ---
 ## Architecture
