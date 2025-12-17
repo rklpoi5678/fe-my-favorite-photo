@@ -19,7 +19,6 @@ export function useFetchUserCards(params = {}) {
           grade: grade,
           genre: genre,
         });
-        console.log(response);
         setMyCards(response.cards);
       } catch (error) {
         console.error('나의 갤러리 카드 목록을 가져오는데 실패했습니다.', error);

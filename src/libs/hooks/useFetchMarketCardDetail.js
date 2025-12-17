@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+
 import { marketCardService } from '../services/marketSaleService';
 
 export function useFetchMarketCardDetail(saleCardId) {

@@ -13,6 +13,15 @@ export function CardCounterInput({ card, cardData, errors, register, setValue, g
   const maxLimit = isEdit
     ? card.quantity
     : (card.totalQuantity || 0)
+
+  const GENRE_CONFIG = {
+    TRAVEL: { label: '여행' },
+    LANDSCAPE: { label: '풍경' },
+    PORTRAIT: { label: '인물' },
+    OBJECT: { label: '사물' },
+  }
+  const myGenre = GENRE_CONFIG[cardData.genre]
+
   const [price, setPrice] = useState(getValues('price') ?? (isEdit ? card.price : ''))
   const [quantity, setQuantity] = useState(getValues('quantity') ?? (isEdit ? card.quantity : 1))
 
@@ -50,7 +59,7 @@ export function CardCounterInput({ card, cardData, errors, register, setValue, g
             <GradeLabel grade={cardData.grade} size />
             <span className="mx-4 text-lg text-gray-400 font-bold sm:text-2xl">|</span>
             <h2 className="text-lg font-bold text-gray-300 sm:text-2xl">
-              {cardData.genre}
+              {myGenre.label}
             </h2>
             <div className="ml-auto">
               <h2 className="text-lg font-bold underline sm:text-2xl">

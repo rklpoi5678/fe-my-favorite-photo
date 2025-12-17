@@ -109,7 +109,6 @@ export default function MobileFilter({ items, size, isGallery = false, isSelling
 
   // 필터 선택
   const handleSelect = (label) => {
-    console.log('선택 라벨:', label, '선택 라벨 목록:', filter[category]);
     const current = filter[category];
     const isSelected = current.includes(label);
     setFilter((prev) => ({

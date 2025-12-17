@@ -22,9 +22,6 @@ export function useFetchSaleCards(params = {}) {
           sale: SALE_STATUS_LABEL[sale],
           status: CARD_STATUS_LABEL[status],
         });
-        console.log(response);
-        console.log('status', status);
-        console.log('sale', sale);
         setMyLocalSellingCards(response.cards);
       } catch (error) {
         console.error('나의 판매된 상품을 가져오는데 실패했습니다.', error);

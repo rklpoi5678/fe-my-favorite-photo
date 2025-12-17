@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect } from 'react';
+
 import ic_search from '@/assets/icons/Ic_search.svg';
 import { useFilter } from '@/providers/FilterProvider';
-import { useEffect } from 'react';
 
 export default function SearchBar({ isGallery = false, isSellingPage = false }) {
   const { searchKeyword, setSearchKeyword } = useFilter();

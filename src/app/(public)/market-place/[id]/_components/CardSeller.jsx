@@ -15,6 +15,13 @@ const GRADE_CONFIG = {
   LEGENDARY: { label: 'LEGENDARY', colorClass: 'text-[#ff4c7d]' },
 };
 
+const GENRE_CONFIG = {
+  TRAVEL: { label: '여행' },
+  LANDSCAPE: { label: '풍경' },
+  PORTRAIT: { label: '인물' },
+  OBJECT: { label: '사물' },
+}
+
 export default function CardSeller({
   card,
   cardData,
@@ -22,8 +29,10 @@ export default function CardSeller({
   wishCategory,
   wishDescription,
 }) {
-  const myGrade = GRADE_CONFIG[cardData.grade] ?? GRADE_CONFIG.COMMON;
-  const wishGradeConfig = GRADE_CONFIG[wishGrade] ?? GRADE_CONFIG.RARE;
+  const myGrade = GRADE_CONFIG[cardData.grade]
+  const wishGradeConfig = GRADE_CONFIG[wishGrade]
+  const myGenre = GENRE_CONFIG[cardData.genre]
+  const wishGenreConfig = GENRE_CONFIG[wishCategory]
 
   const { openModal, closeModal } = useModal()
   const router = useRouter()
@@ -54,7 +63,7 @@ export default function CardSeller({
               {myGrade.label}
             </span>
             <span className="h-[18px] w-px bg-[#4b5563]" />
-            <span className="text-[18px] font-semibold text-[#d1d5db]">{cardData.genre}</span>
+            <span className="text-[18px] font-semibold text-[#d1d5db]">{myGenre.label}</span>
           </div>
           <span className='text-[1.125rem] font-bold underline md:text-[1.5rem]'>{card.seller.nickname}</span>
         </header>
@@ -95,7 +104,7 @@ export default function CardSeller({
               {wishGradeConfig.label}
             </span>
             <span className="h-[16px] w-px bg-[#4b5563]" />
-            <span className="text-[14px] font-semibold text-[#d1d5db]">{wishCategory}</span>
+            <span className="text-[14px] font-semibold text-[#d1d5db]">{wishGenreConfig.label}</span>
           </div>
 
           <div className="h-[1px] bg-[#2a2a2a] mt-3" />

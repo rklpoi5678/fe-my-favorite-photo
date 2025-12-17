@@ -8,11 +8,11 @@ import { useState } from 'react';
 
 import ic_back from '@/assets/icons/Ic_back.svg';
 import ic_bell from '@/assets/icons/Ic_bell.svg';
-import ic_redBell from '@/assets/icons/Ic_redBell.svg';
 import ic_hamburger from '@/assets/icons/Ic_hamberger.svg';
+import ic_redBell from '@/assets/icons/Ic_redBell.svg';
 import img_logo from '@/assets/images/svg/logo.svg';
-import { useAuth } from '@/providers/AuthProvider';
 import { hoursAgo } from '@/libs/utils/time';
+import { useAuth } from '@/providers/AuthProvider';
 import { useNotification } from '@/providers/NotificationProvider';
 
 /** hasId: 처음에 상세 페이지에만 해당 헤더가 쓰이는 줄 알고 /page/id가 있다면 title을 받는 헤더를 표시하려고 함 */
@@ -201,9 +201,8 @@ function MobileNotificationModal({
               <div
                 key={n.id}
                 onClick={() => markAsRead(n.id)}
-                className={`p-4 w-full transition ${
-                  n.isRead ? 'bg-gray-500 text-gray-300' : 'bg-[#222222] text-white'
-                } cursor-pointer`}
+                className={`p-4 w-full transition ${n.isRead ? 'bg-gray-500 text-gray-300' : 'bg-[#222222] text-white'
+                  } cursor-pointer`}
               >
                 <p className="text-[14px] font-normal">{n.content}</p>
                 <p className="text-[12px] font-light mt-2.5">{hoursAgo(n.createdAt)}</p>

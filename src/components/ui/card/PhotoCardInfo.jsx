@@ -1,5 +1,4 @@
 export default function PhotoCardInfo({ card, type }) {
-  console.log('PhotoCardInfo', card)
   const typeMap = {
     // market-place
     remain: {

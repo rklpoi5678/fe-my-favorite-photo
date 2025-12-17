@@ -35,10 +35,8 @@ export default function TradeOfferModal({ isOpen, onClose, onSubmit, card }) {
         offeredUserCardId: card.id,
         description: message.trim()
       }
-      console.log(tradeData)
       const response = await tradeService.requestSale(tradeData)
 
-      console.log('교환 요청성공:', response)
       alert("교환 요청이 성공적으로 접수됨")
       onSubmit?.(message.trim());
       setMessage('');
