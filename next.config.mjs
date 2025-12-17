@@ -22,6 +22,11 @@ const nextConfig = {
         hostname: 'https://be-my-favorite-photo.onrender.com',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'pub-787519ba13284519b724cb840a8aa4d0.r2.dev',
+        pathname: '/**',
+      },
     ],
   },
 };
