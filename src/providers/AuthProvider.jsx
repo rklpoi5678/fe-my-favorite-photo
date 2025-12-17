@@ -1,18 +1,19 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 
 import { getServerSideToken, loginAction, registerAction } from '@/libs/actions/auth';
 import { authService } from '@/libs/services/authService';
 import { userService } from '@/libs/services/userService';
 
 const AuthContext = createContext({
-  login: () => {},
-  logout: () => {},
+  login: () => { },
+  logout: () => { },
   user: null,
-  register: () => {},
-  getUser: () => {},
+  register: () => { },
+  getUser: () => { },
+  updateBalance: () => { },
 });
 
 export const useAuth = () => {
@@ -40,12 +41,12 @@ export default function AuthProvider({ children }) {
     }
   };
 
-  const updateBalance = (newBalance) => {
+  const updateBalance = (delta) => {
     setUser((prev) => {
       if (!prev) return prev;
       return {
         ...prev,
-        balance: newBalance,
+        balance: prev.balance + delta,
       };
     });
   };
@@ -60,8 +61,8 @@ export default function AuthProvider({ children }) {
     const { userData, success } = await loginAction(email, password);
     if (!success) throw new Error('로그인 실패');
     setUser(userData);
-    console.log('login userData:', userData);
-    router.push('/market-place');
+
+    // router.push('/market-place');
   };
 
   const logout = async () => {

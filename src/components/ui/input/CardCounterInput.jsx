@@ -8,10 +8,13 @@ import Plus from "@/assets/icons/Ic_plus.svg"
 
 import GradeLabel from "../label/GradeLabel";
 
-export function CardCounterInput({ card, errors, register, setValue, getValues }) {
-  const [price, setPrice] = useState(getValues('price') || '')
-  const [quantity, setQuantity] = useState(getValues('quantity') || 1)
-  const maxQuantity = card.totalQuantity
+export function CardCounterInput({ card, cardData, errors, register, setValue, getValues, type }) {
+  const isEdit = type === "edit";
+  const maxLimit = isEdit
+    ? card.quantity
+    : (card.totalQuantity || 0)
+  const [price, setPrice] = useState(getValues('price') ?? (isEdit ? card.price : ''))
+  const [quantity, setQuantity] = useState(getValues('quantity') ?? (isEdit ? card.quantity : 1))
 
   useEffect(() => {
     setValue('quantity', Number(quantity), { shouldValidate: true, shouldDirty: true });
@@ -28,7 +31,7 @@ export function CardCounterInput({ card, errors, register, setValue, getValues }
     }
   }
   const incrementQuantity = () => {
-    if (quantity < maxQuantity) {
+    if (quantity < maxLimit) {
       setQuantity(prev => prev + 1)
     }
   }
@@ -44,18 +47,24 @@ export function CardCounterInput({ card, errors, register, setValue, getValues }
       <div className="max-w-85.5 max-h-49 lg:max-w-110 lg:max-h-23.75">
         <div className="border-b border-gray-400">
           <div className="flex items-center mb-7.5 px-0">
-            <GradeLabel grade={card.grade} size />
+            <GradeLabel grade={cardData.grade} size />
             <span className="mx-4 text-lg text-gray-400 font-bold sm:text-2xl">|</span>
-            <h2 className="text-lg font-bold text-gray-300 sm:text-2xl">{card.genre}</h2>
+            <h2 className="text-lg font-bold text-gray-300 sm:text-2xl">
+              {cardData.genre}
+            </h2>
             <div className="ml-auto">
-              <h2 className="text-lg font-bold underline sm:text-2xl">{card.nickname}</h2>
+              <h2 className="text-lg font-bold underline sm:text-2xl">
+                {card.seller?.nickname || card.nickname}
+              </h2>
             </div>
           </div>
         </div>
 
         <div className="mt-8">
           <div className="flex items-center justify-between mb-5">
-            <label className="text-lg md:text-[1.25rem] text-nowrap">총 판매 수량</label>
+            <label className="text-lg md:text-[1.25rem] text-nowrap">
+              {isEdit ? '판매 수량 수정' : '총 판매 수량'}
+            </label>
             <div className="w-13 sm:w-9 shrink"></div>
             <div className="flex items-center gap-3.75 flex-1">
               <div className="flex items-center justify-center rounded-[2px] border border-gray-200 px-3 py-2.5 flex-1">
@@ -71,7 +80,7 @@ export function CardCounterInput({ card, errors, register, setValue, getValues }
                 <button
                   type="button"
                   onClick={incrementQuantity}
-                  disabled={quantity >= maxQuantity}
+                  disabled={quantity >= maxLimit}
                   className="relative flex flex-1 justify-end w-5.5 h-5.5 hover:bg-gray-400/50 transition-colors sm:w-6 sm:h-6"
                 >
                   <Image src={Plus} alt="더하기" />
@@ -83,12 +92,14 @@ export function CardCounterInput({ card, errors, register, setValue, getValues }
                   valueAsNumber: true,
                   required: "수량은 필수입니다.",
                   min: { value: 1, message: "최소 1개 이상이어야 합니다." },
-                  max: { value: maxQuantity, message: `최대 ${maxQuantity}장까지 가능합니다` }
+                  max: { value: maxLimit, message: `최대 ${maxLimit}장까지 가능합니다` }
                 })}
               />
               <div className="flex flex-col">
-                <span className="text-base font-bold text-nowrap text-[1.25rem]">/ {maxQuantity}</span>
-                <div className="text-[12px] text-gray-200 text-nowrap font-light sm:text-[14px]">최대 {maxQuantity}장</div>
+                <span className="text-base font-bold text-nowrap text-[1.25rem]">/ {maxLimit}</span>
+                <div className="text-[12px] text-gray-200 text-nowrap font-light sm:text-[14px]">
+                  {isEdit ? '수정 가능 최대치' : `최대 ${maxLimit}장`}
+                </div>
               </div>
             </div>
           </div>

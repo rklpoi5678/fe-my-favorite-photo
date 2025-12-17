@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -10,12 +11,15 @@ import logoImg from '@/assets/images/logo.png';
 import { GoogleIcon, InvisibleIcon, VisibleIcon } from '@/assets/images/svg/icon';
 import { authSchema } from '@/libs/schemas/authSchema';
 import { useAuth } from '@/providers/AuthProvider';
+import { MODAL_TYPES, useModal } from '@/providers/ModalProvider';
 
 import FormError from '../../../../libs/utils/FormError';
 
 export default function Login() {
+  const router = useRouter();
   const { login } = useAuth();
   const [showEye, setShowEye] = useState(false);
+  const { openModal, closeModal } = useModal();
 
   const {
     register,
@@ -25,14 +29,31 @@ export default function Login() {
     resolver: zodResolver(authSchema.login),
     mode: 'onChange',
   });
-  
+
   const onSubmit = async (data) => {
-    
     try {
       await login(data.email, data.password);
-      console.log('로그인성공');
+
+      openModal(MODAL_TYPES.MODAL, {
+        title: '로그인 성공',
+        description: '최애의 포토에 오신 것을 환영합니다!',
+        confirmText: '확인',
+        onConfirm: () => {
+          closeModal();
+          sessionStorage.setItem('loginSuccess', 'true');
+          closeModal();
+          router.push('/market-place');
+        },
+      });
     } catch (error) {
-      console.error('로그인 실패 : ', error);
+      openModal(MODAL_TYPES.MODAL, {
+        title: '로그인 실패',
+        description: '이메일 또는 비밀번호를 확인해주세요.',
+        confirmText: '확인',
+        onConfirm: () => {
+          closeModal();
+        },
+      });
     }
   };
 

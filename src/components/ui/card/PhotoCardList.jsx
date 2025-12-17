@@ -72,13 +72,20 @@ export default function PhotoCardList({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // 페이지네이션
+  const usePagination = isSellingPage || isGalleryPage;
+
   let itemsPerPage = 16;
   if (windowWidth >= 1920) itemsPerPage = 15;
 
-  // 페이지네이션
-  const totalPages = Math.ceil(cardsRenderingType.length / itemsPerPage);
+  // 페이지네이션 사용하는 경우만 계산
+  const totalPages = usePagination ? Math.ceil(cardsRenderingType.length / itemsPerPage) : 1;
+
   const start = (currentPage - 1) * itemsPerPage;
-  const pagedCards = (cardsRenderingType || []).slice(start, start + itemsPerPage);
+
+  const renderedCards = usePagination
+    ? (cardsRenderingType || []).slice(start, start + itemsPerPage)
+    : cardsRenderingType;
 
   const isLoading = marketLoading || myCardsLoading || saleCardsLoading;
 
@@ -93,7 +100,7 @@ export default function PhotoCardList({
     <div>
       <div className="flex justify-center">
         <div className="grid sm:grid-cols-2 sm:gap-[5px] md:grid-cols-2 md:gap-5 lg:grid-cols-3 lg:gap-20">
-          {pagedCards.map((card) => {
+          {renderedCards.map((card) => {
             // soldOutIcon은 sold_out 이미지 처리에 수정 예정(밑에 코드 지울 것)
             let soldOutIcon;
 
@@ -126,11 +133,11 @@ export default function PhotoCardList({
 
             // isSellingPage 또는 isGalleryPage일 때 상세 페이지 이동 X
             return isLinkDisabled ? (
-              <div key={isSellingPage ? `${card.id}-${card.saleType}` : card.id}>{cardContent}</div>
+              <div key={card.id}>{cardContent}</div>
             ) : (
               <div
                 href={`/market-place/${card.id}`}
-                key={isSellingPage ? `${card.id}-${card.saleType}` : card.id}
+                key={card.id}
                 onClick={() => handleCardClick(card.id)}
               >
                 {cardContent}
@@ -140,6 +147,14 @@ export default function PhotoCardList({
         </div>
       </div>
 
+      {usePagination && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
+
       <Modal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
@@ -148,7 +163,6 @@ export default function PhotoCardList({
         confirmText="확인"
         onConfirm={() => router.push('/login')}
       />
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
     </div>
   );
 }

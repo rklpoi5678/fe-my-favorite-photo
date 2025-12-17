@@ -2,16 +2,16 @@
 import { CardTitle } from '@/components/common/card-title/CardTitle';
 import { MODAL_TYPES, useModal } from '@/providers/ModalProvider';
 
-export function CardTitleClient({ size }) {
-  const { openModal } = useModal()
+export function CardTitleClient({ size, buttonSize }) {
+  const { openModal } = useModal();
 
   const onClickButton = () => {
     openModal(MODAL_TYPES.SELL_PHOTO_CARD, {
-      title: "나의 포토카드 판매하기",
-      subTitle: "마이갤러리",
-      modal: "sell"
-    })
-  }
+      title: '나의 포토카드 판매하기',
+      subTitle: '마이갤러리',
+      modal: 'sell',
+    });
+  };
 
   return (
     <>
@@ -19,9 +19,10 @@ export function CardTitleClient({ size }) {
         onClick={() => onClickButton()}
         titleMessage="마켓 플레이스"
         buttonMessage="나의 포토카드 판매하기"
-        className="w-full mx-auto md:text-[3.875rem] sm:text-[3rem]"
+        className="w-full mx-auto md:text-[48px] sm:text-[3rem]"
+        size={size ? 'M' : ''}
         buttonSize={size ? 'S' : ''}
       />
     </>
-  )
+  );
 }

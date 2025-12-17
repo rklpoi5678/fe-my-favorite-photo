@@ -27,7 +27,13 @@ export default function Modal({ isOpen, onClose, title, description, confirmText
         </p>
         <div className="flex justify-center items-center mt-[60px] ">
           <button
-            onClick={onConfirm}
+            onClick={() => {
+              if (onConfirm) {
+                onConfirm();
+              } else {
+                onClose();
+              }
+            }}
             className="  gap-2.5 rounded-xs px-20 bg-main py-[17px] text-black font-noto text-[18px] font-bold "
           >
             {confirmText}

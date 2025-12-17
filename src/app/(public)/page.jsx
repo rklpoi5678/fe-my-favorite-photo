@@ -1,5 +1,7 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import BackgroundImg from '@/assets/landing/Img_3x_background.png';
 import BlueBox from '@/assets/landing/Img_3x_blueBox.png';
@@ -13,8 +15,11 @@ import Section1 from '@/assets/landing/Img_3x_section1.png';
 import Section2 from '@/assets/landing/Img_3x_section2.png';
 import Section3 from '@/assets/landing/Img_3x_section3.png';
 import SectionBackground from '@/assets/landing/Img_section3Background.png';
+import RandomModal from '@/components/ui/modal/random/RandomModal';
 
 export default function Home() {
+  const [open, setOpen] = useState(false);
+
   return (
     <>
       <main className="w-full min-h-screen bg-black overflow-x-hidden">
@@ -28,7 +33,6 @@ export default function Home() {
             />
           </div>
         </div>
-
         <div className="relative w-full">
           <section className="relative w-full flex justify-center pt-8 pb-4 overflow-hidden z-30">
             <div className="relative w-[85vw] max-w-[2000px]">
