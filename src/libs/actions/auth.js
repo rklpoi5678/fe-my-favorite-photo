@@ -24,12 +24,12 @@ export async function setServerSideTokens(accessToken, refreshToken) {
   cookieStore.set('accessToken', accessToken, {
     path: '/',
     maxAge: accessTokenExpiresIn,
-    sameSite: 'strict',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
   });
 
-  // ⭐ refreshToken 이 있을 때만 처리 (loginAction에서는 null 넘기니까 여기 안 탐)
+  // refreshToken 이 있을 때만 처리 (loginAction에서는 null 넘기니까 여기 안 탐)
   if (refreshToken) {
     const refreshTokenData = jwtDecode(refreshToken);
     const refreshTokenExpiresIn = refreshTokenData.exp - Math.floor(Date.now() / 1000);
@@ -37,7 +37,7 @@ export async function setServerSideTokens(accessToken, refreshToken) {
     cookieStore.set('refreshToken', refreshToken, {
       path: '/',
       maxAge: refreshTokenExpiresIn,
-      sameSite: 'strict',
+      sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
       httpOnly: true,
     });
@@ -54,7 +54,7 @@ export async function updateAccessToken(accessToken) {
   cookieStore.set('accessToken', accessToken, {
     path: '/',
     maxAge: accessTokenExpiresIn,
-    sameSite: 'strict',
+    sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
   });
